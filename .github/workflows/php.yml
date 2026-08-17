@@ -1,0 +1,106 @@
+name: PHP CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: php-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PLUGIN_DIR: wordpress-plugin/headless-product-catalog
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wordpress-plugin/headless-product-catalog
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer/files
+          key: composer-${{ runner.os }}-${{ hashFiles('wordpress-plugin/headless-product-catalog/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Validate Composer metadata
+        run: composer validate --strict
+
+      - name: Check PHP syntax
+        run: find . -path ./vendor -prune -o -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Run WordPress Coding Standards
+        run: composer lint
+
+      - name: Audit dependencies
+        run: composer audit --locked
+
+  phpunit:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: wordpress_test
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    defaults:
+      run:
+        working-directory: wordpress-plugin/headless-product-catalog
+    env:
+      WP_TESTS_DIR: /tmp/wordpress-develop/tests/phpunit
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
+          extensions: mysqli
+
+      - name: Install plugin dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Install WordPress test library
+        working-directory: /tmp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq subversion
+          svn export --quiet https://develop.svn.wordpress.org/tags/7.0/ wordpress-develop
+          cp wordpress-develop/wp-tests-config-sample.php wordpress-develop/wp-tests-config.php
+          sed -i "s/youremptytestdbnamehere/wordpress_test/" wordpress-develop/wp-tests-config.php
+          sed -i "s/yourusernamehere/root/" wordpress-develop/wp-tests-config.php
+          sed -i "s/yourpasswordhere/root/" wordpress-develop/wp-tests-config.php
+          sed -i "s|localhost|127.0.0.1|" wordpress-develop/wp-tests-config.php
+
+      - name: Run PHPUnit against isolated WordPress
+        run: composer test

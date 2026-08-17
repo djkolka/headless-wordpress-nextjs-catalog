@@ -25,7 +25,7 @@ The repository implements a sanitized WordPress-backed product catalog with a PH
 
 ## Not executed locally
 
-The PHPUnit test suite was implemented but was not executed locally because the WordPress PHPUnit test environment was unavailable. PHP syntax checks, coding standards, live REST integration checks, and draft-access verification passed. PHPUnit requires the official WordPress test library and an isolated disposable database; the development database was not used.
+The PHPUnit test suite was not pointed at the Windows development database because the official WordPress PHPUnit environment was unavailable locally. The same committed suite passed in GitHub Actions against WordPress 7.0 and an isolated MySQL 8.4 database. Local PHP syntax checks, coding standards, live REST integration checks, and draft-access verification passed independently.
 
 ## External dependencies and limitations
 

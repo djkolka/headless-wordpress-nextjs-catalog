@@ -196,9 +196,15 @@ On product changes, WordPress posts an exact JSON body with a timestamp and `HMA
 - End-to-end production-server smoke tests for listing, filtering, detail, signed revalidation, and preview rejection against the real local WordPress API
 - Repository and existing Git history secret/private-data scan
 
-### Implemented but not executed locally
+### Passed in GitHub Actions
 
-The PHPUnit test suite was implemented but was not executed locally because the WordPress PHPUnit test environment was unavailable. PHP syntax checks, coding standards, live REST integration checks, and draft-access verification passed. The tests require the official WordPress test library and an isolated test database; they were never pointed at the development database.
+- Frontend tests, ESLint, Prettier, TypeScript, production build, and npm audit
+- PHP syntax, strict Composer validation, WordPress coding standards, and Composer audit
+- PHPUnit integration suite against WordPress 7.0 and an isolated MySQL 8.4 test database
+
+### Local PHPUnit note
+
+PHPUnit was not executed against the Windows development database because the official WordPress PHPUnit environment was unavailable locally. The same committed suite passed in GitHub Actions using the official WordPress test library and a disposable database. Local PHP syntax, coding standards, and live REST integration checks passed independently.
 
 ## Deployment
 
@@ -214,5 +220,5 @@ The PHPUnit test suite was implemented but was not executed locally because the 
 - Text-based taxonomy slug filters avoid adding a separate taxonomy-discovery endpoint.
 - Prices are display-only; there is no inventory, localization, or transactional behavior.
 - Webhook delivery is non-blocking and has no persistent retry queue; ISR provides eventual recovery.
-- The local machine did not have isolated WordPress PHPUnit infrastructure, so that suite was not executed locally.
+- The local machine did not have isolated WordPress PHPUnit infrastructure; the committed suite passed in CI against a disposable MySQL database.
 - No hosted demo is provided; the immediate deliverable is a reproducible, reviewable code sample.

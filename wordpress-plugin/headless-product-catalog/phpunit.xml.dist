@@ -2,8 +2,7 @@
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
   <testsuites>
     <testsuite name="plugin">
-      <file>tests/test-product-normalizer.php</file>
-      <file>tests/test-rest-controller.php</file>
+      <directory suffix="Test.php">tests</directory>
     </testsuite>
   </testsuites>
 </phpunit>

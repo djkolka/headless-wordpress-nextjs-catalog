@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
 <phpunit bootstrap="tests/bootstrap.php" colors="true">
-  <testsuites><testsuite name="plugin"><directory>tests</directory></testsuite></testsuites>
+  <testsuites>
+    <testsuite name="plugin">
+      <file>tests/test-product-normalizer.php</file>
+      <file>tests/test-rest-controller.php</file>
+    </testsuite>
+  </testsuites>
 </phpunit>

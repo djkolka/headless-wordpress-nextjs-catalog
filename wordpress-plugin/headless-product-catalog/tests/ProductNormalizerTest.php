@@ -1,6 +1,6 @@
 <?php
 
-final class Test_Product_Normalizer extends WP_UnitTestCase {
+final class ProductNormalizerTest extends WP_UnitTestCase {
 	public function test_normalizes_fields_without_exposing_raw_post_data(): void {
 		$id = self::factory()->post->create(
 			array(

@@ -1,6 +1,6 @@
 <?php
 
-final class Test_REST_Controller extends WP_UnitTestCase {
+final class RestControllerTest extends WP_UnitTestCase {
 	public function set_up(): void {
 		parent::set_up();
 		do_action( 'rest_api_init' );

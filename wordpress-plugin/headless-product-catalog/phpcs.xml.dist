@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="Headless Product Catalog">
+  <description>Pragmatic WordPress coding standards for the catalog plugin.</description>
+  <file>headless-product-catalog.php</file>
+  <file>includes</file>
+  <exclude-pattern>vendor/*</exclude-pattern>
+  <rule ref="WordPress-Core"/>
+  <rule ref="WordPress-Extra"/>
+  <arg name="extensions" value="php"/>
+  <config name="minimum_supported_wp_version" value="6.5"/>
+</ruleset>

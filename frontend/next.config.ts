@@ -41,8 +41,7 @@ const config: NextConfig = {
   agentRules: false,
   images: {
     remotePatterns: wordpressPattern(),
-    unoptimized:
-      process.env.NODE_ENV === "development" && usesLocalWordPress(),
+    unoptimized: process.env.NODE_ENV === "development" && usesLocalWordPress(),
   },
   poweredByHeader: false,
 };
